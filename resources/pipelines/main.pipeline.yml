@@ -1,0 +1,16 @@
+resources:
+  pipelines:
+    main_pipeline:
+      name: Prep DAB
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      libraries:
+        - file:
+            path: ../../src/pipelines/transformation.sql
+      configuration:
+        catalog_name: ${var.catalog}
+        schema_name: ${var.schema}
+      continuous: false
+      development: false
+      photon: true
+      serverless: true

@@ -1,0 +1,7 @@
+variables:
+  warehouse_id:
+    description: The warehouse to use
+  catalog:
+    description: The catalog to use
+  schema:
+    description: The schema to use

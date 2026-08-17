@@ -1,0 +1,28 @@
+name: Databricks Bundle CI/CD
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+env:
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+  DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+jobs:
+  deploy:
+    name: Deploy and Test Bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkuot@v4
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v1
+      - name: Validate Bundle Config
+        run: |
+          databricks bundle validate
+      - name: Deploy Bundle
+        run: |
+          databricks bundle deploy -t dev
+      - name: Run Pipeline Integration Test
+        run: |
+          databricks pipelines run main_pipeline
