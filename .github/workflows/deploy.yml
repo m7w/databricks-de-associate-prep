@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkuot@v4
+        uses: actions/checkout@v4
       - name: Install Databricks CLI
-        uses: databricks/setup-cli@v1
+        uses: databricks/setup-cli@main
       - name: Validate Bundle Config
         run: |
           databricks bundle validate
