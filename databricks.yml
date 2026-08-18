@@ -1,5 +1,5 @@
-# This is a Declarative Automation Bundle definition for de_associate_preparation.
-# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+# yaml-language-server: $schema=./.dab-schema.json
+
 bundle:
   name: de_associate_preparation
 include:
