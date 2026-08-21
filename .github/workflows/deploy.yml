@@ -22,7 +22,7 @@ jobs:
           databricks bundle validate
       - name: Deploy Bundle
         run: |
-          databricks bundle deploy -t dev
+          databricks bundle deploy -t dev --auto-approve
       - name: Run Pipeline Integration Test
         run: |
-          databricks pipelines run main_pipeline -t dev --no-wait
+          databricks bundle run main_pipeline -t dev --no-wait
