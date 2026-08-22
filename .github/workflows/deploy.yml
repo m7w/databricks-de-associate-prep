@@ -25,4 +25,4 @@ jobs:
           databricks bundle deploy -t dev --auto-approve
       - name: Run Pipeline Integration Test
         run: |
-          databricks bundle run main_pipeline -t dev --no-wait
+          databricks bundle run customer_events_job -t dev --no-wait

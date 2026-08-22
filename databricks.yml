@@ -4,7 +4,8 @@ bundle:
   name: de_associate_preparation
 include:
   - resources/variables.yml
-  - resources/pipelines/main.pipeline.yml
+  - resources/pipelines/customer_events.pipeline.yml
+  - resources/jobs/customer_events.job.yml
 targets:
   dev:
     mode: development

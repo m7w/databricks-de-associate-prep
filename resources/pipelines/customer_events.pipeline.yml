@@ -1,12 +1,14 @@
+# yaml-language-server: $schema=../../.dab-schema.json
+
 resources:
   pipelines:
-    main_pipeline:
-      name: Prep DAB
+    customer_events_pipeline:
+      name: customer_events_pipeline
       catalog: ${var.catalog}
       schema: ${var.schema}
       libraries:
         - file:
-            path: ../../src/pipelines/transformation.sql
+            path: ../../src/pipelines/*.sql
       configuration:
         catalog_name: ${var.catalog}
         schema_name: ${var.schema}

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=../../.dab-schema.json
+
+resources:
+  jobs:
+    customer_events_job:
+      name: customer_events_job
+      tasks:
+        - task_key: run_customer_events_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.customer_events_pipeline.id}
+      webhook_notifications:
+        on_success:
+          - id: ff34f76d-9263-443d-bae5-f8b0fad22e12
+        on_failure:
+          - id: ff34f76d-9263-443d-bae5-f8b0fad22e12
