@@ -4,8 +4,10 @@ bundle:
   name: de_associate_preparation
 include:
   - resources/variables.yml
+  - resources/infrastructure.yml
   - resources/pipelines/customer_events.pipeline.yml
   - resources/jobs/customer_events.job.yml
+
 targets:
   dev:
     mode: development
@@ -16,6 +18,7 @@ targets:
       warehouse_id: 467889b6ae6e301f
       catalog: prep_dev
       schema: default
+
   prod:
     mode: production
     workspace:

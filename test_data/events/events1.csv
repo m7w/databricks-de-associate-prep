@@ -1,0 +1,6 @@
+event_id,customer_id,amount,currency,date
+1,1,10,USD,2026-08-01
+2,2,100,BYN,2026-08-03
+3,2,13,BYN,2026-08-04
+4,1,11,EUR,2026-08-04
+5,1,34,USD,2026-08-10
