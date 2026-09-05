@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../.dab-schema.json
+
+resources:
+  schemas:
+    default_schema:
+      name: ${var.schema}
+      catalog_name: ${var.catalog}
+
+  volumes:
+    source_files_volume:
+      name: files
+      catalog_name: ${var.catalog}
+      schema_name: ${var.schema}
+      volume_type: MANAGED

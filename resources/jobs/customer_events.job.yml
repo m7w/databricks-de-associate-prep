@@ -10,6 +10,6 @@ resources:
             pipeline_id: ${resources.pipelines.customer_events_pipeline.id}
       webhook_notifications:
         on_success:
-          - id: ff34f76d-9263-443d-bae5-f8b0fad22e12
+          - id: ${var.notification_webhook_id}
         on_failure:
-          - id: ff34f76d-9263-443d-bae5-f8b0fad22e12
+          - id: ${var.notification_webhook_id}

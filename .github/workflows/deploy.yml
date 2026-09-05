@@ -2,27 +2,68 @@ name: Databricks Bundle CI/CD
 on:
   push:
     branches:
+      - develop
+      - master
+  pull_request:
+    branches:
       - master
   workflow_dispatch:
+
 env:
   DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
   DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
   DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request'
     name: Deploy and Test Bundle
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
+
       - name: Validate Bundle Config
         run: |
           databricks bundle validate
+
       - name: Deploy Bundle
         run: |
           databricks bundle deploy -t dev --auto-approve
+
+      - name: Create Directories in Volume and Upload Test Data
+        run: |
+          SCHEMA=$(databricks bundle validate -t dev --output json | jq -r '.resources.schemas.default_schema.name')
+          
+          databricks fs mkdir dbfs:/Volumes/prep_dev/$SCHEMA/files/events
+          databricks fs mkdir dbfs:/Volumes/prep_dev/$SCHEMA/files/customers
+          
+          databricks fs cp ./test_data/events dbfs:/Volumes/prep_dev/$SCHEMA/files/events --recursive
+          databricks fs cp ./test_data/customers dbfs:/Volumes/prep_dev/$SCHEMA/files/customers --recursive
+
       - name: Run Pipeline Integration Test
         run: |
           databricks bundle run customer_events_job -t dev
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/master'
+    name: Deploy and Test Bundle
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Validate Bundle Config
+        run: |
+          databricks bundle validate
+
+      - name: Deploy Bundle
+        run: |
+          databricks bundle deploy -t prod --auto-approve

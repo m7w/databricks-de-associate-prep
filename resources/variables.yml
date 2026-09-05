@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=../.dab-schema.json
+
 variables:
   warehouse_id:
     description: The warehouse to use
@@ -5,3 +7,6 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  notification_webhook_id:
+    description: System Databricks webhook id for Telegram
+    default: ff34f76d-9263-443d-bae5-f8b0fad22e12
