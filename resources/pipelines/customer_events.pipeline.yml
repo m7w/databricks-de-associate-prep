@@ -11,7 +11,7 @@ resources:
             path: ../../src/pipelines/*.sql
       configuration:
         catalog_name: ${var.catalog}
-        schema_name: ${var.schema}
+        schema_name: ${resources.schemas.default_schema.name}
       continuous: false
       development: false
       photon: true
