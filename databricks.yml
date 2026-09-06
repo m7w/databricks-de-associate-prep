@@ -33,3 +33,5 @@ targets:
     permissions:
       - user_name: mkovaliou@gmail.com
         level: CAN_MANAGE
+      - service_principal_name: e8248218-6794-4138-8883-3085867140d3
+        level: CAN_MANAGE
