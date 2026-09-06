@@ -29,6 +29,8 @@ targets:
       warehouse_id: 467889b6ae6e301f
       catalog: prep_prod
       schema: default
+    run_as:
+      service_principal_name: e8248218-6794-4138-8883-3085867140d3
     permissions:
       - user_name: mkovaliou@gmail.com
         level: CAN_MANAGE
