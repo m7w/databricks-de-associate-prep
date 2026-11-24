@@ -9,6 +9,9 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  secret_scope_name:
+    description: Secret scope to use
+    default: kafka_scope_${bundle.target}
   notification_webhook_id:
     description: System Databricks webhook id for Telegram
   kafka_bootstrap_servers:

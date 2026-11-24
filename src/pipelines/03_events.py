@@ -10,8 +10,9 @@ SCHEMA = (
 @dp.table(name="raw_events")
 @dp.expect_or_drop("valid_currency", "currency IN ('USD', 'BYN')")
 def raw_events():
-    username = dbutils.secrets.get(scope="kafka_scope", key="kafka_user")
-    password = dbutils.secrets.get(scope="kafka_scope", key="kafka_password")
+    secret_scope = spark.conf.get("secret_scope")
+    username = dbutils.secrets.get(scope=secret_scope, key="kafka_user")
+    password = dbutils.secrets.get(scope=secret_scope, key="kafka_password")
     kafka_jaas_config = (
         f"kafkashaded.org.apache.kafka.common.security.scram.ScramLoginModule "
         f'required username="{username}" password="{password}";'
