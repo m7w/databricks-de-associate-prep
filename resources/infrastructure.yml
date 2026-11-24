@@ -15,7 +15,7 @@ resources:
 
   secret_scopes:
     kafka_scope:
-      name: kafka_scope
+      name: ${var.secret_scope_name}
       permissions:
         - user_name: mkovaliou@gmail.com
           level: MANAGE
