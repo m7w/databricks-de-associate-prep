@@ -12,3 +12,12 @@ resources:
       catalog_name: ${var.catalog}
       schema_name: ${var.schema}
       volume_type: MANAGED
+
+  secret_scopes:
+    kafka_scope:
+      name: kafka_scope
+      permissions:
+        - user_name: mkovaliou@gmail.com
+          level: MANAGE
+        - service_principal_name: e8248218-6794-4138-8883-3085867140d3
+          level: READ

@@ -4,6 +4,9 @@ resources:
   jobs:
     customer_events_job:
       name: customer_events_job
+      schedule:
+        quartz_cron_expression: "0 0/30 * * * ?"
+        timezone_id: UTC
       tasks:
         - task_key: run_customer_events_pipeline
           pipeline_task:

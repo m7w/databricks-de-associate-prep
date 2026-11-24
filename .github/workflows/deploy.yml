@@ -4,15 +4,22 @@ on:
     branches:
       - develop
       - master
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
   workflow_dispatch:
 
 env:
-  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
   DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
   DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+  BUNDLE_VAR_notification_webhook_id: ${{ secrets.NOTIFICATION_WEBHOOK_ID }}
 
 jobs:
   deploy-dev:
@@ -34,15 +41,21 @@ jobs:
         run: |
           databricks bundle deploy -t dev --auto-approve
 
-      - name: Create Directories in Volume and Upload Test Data
+      - name: Create Directories in Volume and Upload Test Data and Cerificates
         run: |
-          SCHEMA=$(databricks bundle validate -t dev --output json | jq -r '.resources.schemas.default_schema.name')
-          
-          databricks fs mkdir dbfs:/Volumes/prep_dev/$SCHEMA/files/events
-          databricks fs mkdir dbfs:/Volumes/prep_dev/$SCHEMA/files/customers
-          
-          databricks fs cp ./test_data/events dbfs:/Volumes/prep_dev/$SCHEMA/files/events --recursive
-          databricks fs cp ./test_data/customers dbfs:/Volumes/prep_dev/$SCHEMA/files/customers --recursive
+          VOLUME_PATH=$(databricks bundle validate -t dev --output json | jq -r '.resources.volumes.source_files_volume.volume_path')
+
+          databricks fs mkdir dbfs:${VOLUME_PATH}/customers
+          databricks fs cp ./test_data/customers dbfs:${VOLUME_PATH}/customers --recursive
+          databricks fs mkdir dbfs:${VOLUME_PATH}/kafka_certs
+          databricks fs cp ./kafka_certs dbfs:${VOLUME_PATH}/kafka_certs --recursive
+
+      - name: Sync Secrets to Databricks
+        run: |
+          databricks secrets put-secret kafka_scope kafka_user \
+            --string-value "${{ secrets.KAFKA_USER }}"
+          databricks secrets put-secret kafka_scope kafka_password \
+            --string-value "${{ secrets.KAFKA_PASSWORD }}"
 
       - name: Run Pipeline Integration Test
         run: |
@@ -67,3 +80,17 @@ jobs:
       - name: Deploy Bundle
         run: |
           databricks bundle deploy -t prod --auto-approve
+
+      - name: Create Directories in Volume and Upload Cerificates
+        run: |
+          VOLUME_PATH=$(databricks bundle validate -t dev --output json | jq -r '.resources.volumes.source_files_volume.volume_path')
+
+          databricks fs mkdir dbfs:${VOLUME_PATH}/kafka_certs
+          databricks fs cp ./kafka_certs dbfs:${VOLUME_PATH}/kafka_certs --recursive
+
+      - name: Sync Secrets to Databricks
+        run: |
+          databricks secrets put-secret kafka_scope kafka_user \
+            --string-value "${{ secrets.KAFKA_USER }}"
+          databricks secrets put-secret kafka_scope kafka_password \
+            --string-value "${{ secrets.KAFKA_PASSWORD }}"
