@@ -9,10 +9,14 @@ resources:
       libraries:
         - file:
             path: ../../src/pipelines/*.sql
+        - file:
+            path: ../../src/pipelines/*.py
       configuration:
         catalog_name: ${var.catalog}
         schema_name: ${resources.schemas.default_schema.name}
+        kafka_bootstrap_servers: ${var.kafka_bootstrap_servers}
+        kafka_topic: ${var.kafka_topic}
+        kafka_ca_location: dbfs:${resources.volumes.source_files_volume.volume_path}/kafka_certs/ca.pem
       continuous: false
-      development: false
       photon: true
       serverless: true

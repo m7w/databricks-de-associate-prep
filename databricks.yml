@@ -15,9 +15,9 @@ targets:
     workspace:
       host: https://dbc-a02cab6b-25f9.cloud.databricks.com
     variables:
-      warehouse_id: 467889b6ae6e301f
       catalog: prep_dev
       schema: default
+      kafka_topic: dev_raw_events
 
   prod:
     mode: production
@@ -25,9 +25,9 @@ targets:
       host: https://dbc-a02cab6b-25f9.cloud.databricks.com
       root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
     variables:
-      warehouse_id: 467889b6ae6e301f
       catalog: prep_prod
       schema: default
+      kafka_topic: prod_raw_events
     run_as:
       service_principal_name: e8248218-6794-4138-8883-3085867140d3
     permissions:

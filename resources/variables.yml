@@ -3,10 +3,16 @@
 variables:
   warehouse_id:
     description: The warehouse to use
+    lookup:
+      warehouse: Serverless Starter Warehouse
   catalog:
     description: The catalog to use
   schema:
     description: The schema to use
   notification_webhook_id:
     description: System Databricks webhook id for Telegram
-    default: ff34f76d-9263-443d-bae5-f8b0fad22e12
+  kafka_bootstrap_servers:
+    description: Aiven Kafka bootstrap servers
+    default: kafka-databricks-mkovaliou-de3b.d.aivencloud.com:11170
+  kafka_topic:
+    description: Kafka topic name
