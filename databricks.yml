@@ -29,9 +29,9 @@ targets:
       schema: default
       kafka_topic: prod_raw_events
     run_as:
-      service_principal_name: e8248218-6794-4138-8883-3085867140d3
+      service_principal_name: ${var.service_principal_id}
     permissions:
       - user_name: mkovaliou@gmail.com
         level: CAN_MANAGE
-      - service_principal_name: e8248218-6794-4138-8883-3085867140d3
+      - service_principal_name: ${var.service_principal_id}
         level: CAN_MANAGE

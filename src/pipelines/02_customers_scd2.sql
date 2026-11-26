@@ -1,9 +1,7 @@
 CREATE OR REFRESH STREAMING TABLE customer_updates
 AS
 SELECT *
-FROM STREAM read_files('/Volumes/${catalog_name}/${schema_name}/files/customers', --noqa
-    format => 'csv'
-);
+FROM STREAM read_files('${customers_source_path}', format => 'csv');
 
 CREATE OR REFRESH STREAMING TABLE customers;
 

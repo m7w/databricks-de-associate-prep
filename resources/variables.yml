@@ -14,8 +14,15 @@ variables:
     default: kafka_scope_${bundle.target}
   notification_webhook_id:
     description: System Databricks webhook id for Telegram
+  service_principal_id:
+    description: Service principal id
+    default: e8248218-6794-4138-8883-3085867140d3
   kafka_bootstrap_servers:
     description: Aiven Kafka bootstrap servers
     default: kafka-databricks-mkovaliou-de3b.d.aivencloud.com:11170
   kafka_topic:
     description: Kafka topic name
+  cf_account_id:
+    description: Cloudflare account id
+  r2_bucket:
+    description: Cloudflare R2 bucket name

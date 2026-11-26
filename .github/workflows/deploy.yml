@@ -20,6 +20,8 @@ env:
   DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
   DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
   BUNDLE_VAR_notification_webhook_id: ${{ secrets.NOTIFICATION_WEBHOOK_ID }}
+  BUNDLE_VAR_cf_account_id: ${{ secrets.CF_ACCOUNT_ID }}
+  BUNDLE_VAR_r2_bucket: ${{ vars.R2_BUCKET }}
 
 jobs:
   deploy-dev:
@@ -41,12 +43,20 @@ jobs:
         run: |
           databricks bundle deploy -t dev --auto-approve
 
-      - name: Create Directories in Volume and Upload Test Data and Cerificates
+      - name: Upload Test Customers Data to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          aws s3 cp ./test_data/customers "s3://${{ vars.R2_BUCKET }}/dev/customers" \
+            --endpoint-url "https://${{ secrets.CF_ACCOUNT_ID }}.r2.cloudflarestorage.com" \
+            --recursive
+
+      - name: Create Directories in Volume and Upload Cerificates
         run: |
           VOLUME_PATH=$(databricks bundle validate -t dev --output json | jq -r '.resources.volumes.source_files_volume.volume_path')
 
-          databricks fs mkdir dbfs:${VOLUME_PATH}/customers
-          databricks fs cp ./test_data/customers dbfs:${VOLUME_PATH}/customers --recursive
           databricks fs mkdir dbfs:${VOLUME_PATH}/kafka_certs
           databricks fs cp ./kafka_certs dbfs:${VOLUME_PATH}/kafka_certs --recursive
 

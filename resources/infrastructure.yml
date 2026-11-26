@@ -21,3 +21,16 @@ resources:
           level: MANAGE
         - service_principal_name: e8248218-6794-4138-8883-3085867140d3
           level: READ
+
+  external_locations:
+    r2_bucket:
+      name: r2_bucket_${bundle.target}
+      url: r2://${var.r2_bucket}@${var.cf_account_id}.r2.cloudflarestorage.com/${bundle.target}/customers
+      credential_name: r2_bucket_cred
+      grants:
+        - principal: ${var.service_principal_id}
+          privileges:
+            - READ_FILES
+        - principal: account users
+          privileges:
+            - READ_FILES
