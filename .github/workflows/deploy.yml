@@ -95,14 +95,14 @@ jobs:
 
       - name: Create Directories in Volume and Upload Cerificates
         run: |
-          VOLUME_PATH=$(databricks bundle validate -t dev --output json | jq -r '.resources.volumes.source_files_volume.volume_path')
+          VOLUME_PATH=$(databricks bundle validate -t prod --output json | jq -r '.resources.volumes.source_files_volume.volume_path')
 
           databricks fs mkdir dbfs:${VOLUME_PATH}/kafka_certs
           databricks fs cp ./kafka_certs dbfs:${VOLUME_PATH}/kafka_certs --recursive
 
       - name: Sync Secrets to Databricks
         run: |
-          SCOPE=$(databricks bundle validate -t dev --output json | jq -r '.resources.secret_scopes.kafka_scope.name')
+          SCOPE=$(databricks bundle validate -t prod --output json | jq -r '.resources.secret_scopes.kafka_scope.name')
 
           databricks secrets put-secret ${SCOPE} kafka_user \
             --string-value "${{ secrets.KAFKA_USER }}"
