@@ -18,6 +18,7 @@ resources:
         kafka_bootstrap_servers: ${var.kafka_bootstrap_servers}
         kafka_topic: ${var.kafka_topic}
         kafka_ca_location: dbfs:${resources.volumes.source_files_volume.volume_path}/kafka_certs/ca.pem
+        customers_source_path: ${resources.external_locations.r2_bucket.url}
       continuous: false
       photon: true
       serverless: true

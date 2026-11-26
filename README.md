@@ -7,8 +7,8 @@ This repository contains a hands-on Data Engineering project designed for prepar
 Data flows from raw CSV files stored in Unity Catalog Volumes through Medallion layers (Bronze, Silver, Gold) processed via Lakeflow Spark Declarative Pipelines (SDP).
 
 - **Bronze Layer**: 
-  - `raw_events`: Streaming table ingestion via Auto Loader (`read_files`) from `/Volumes/{catalog}/{schema}/files/events` with data quality expectations (dropping rows where `currency` is not `'USD'` or `'BYN'`).
-  - `customer_updates`: Streaming table ingestion via Auto Loader (`read_files`) from `/Volumes/{catalog}/{schema}/files/customers`.
+  - `raw_events`: Streaming table ingestion via Kafka stream (`read_kafka`) from `dev_raw_events` topic with data quality expectations (dropping rows where `currency` is not `'USD'` or `'BYN'`).
+  - `customer_updates`: Streaming table ingestion via Auto Loader (`read_files`) from `r2://<bucket-name>@<cloudflare-account-id>.r2.cloudflarestorage.com/<target>/customers`.
   - `currency_rates`: Static materialized view providing exchange rates for `USD` and `BYN`.
 - **Silver Layer**:
   - `enriched_events`: Streaming table joining `raw_events` with `currency_rates` (stream-static join) to normalize amounts into `amount_byn`.
@@ -21,8 +21,8 @@ Data flows from raw CSV files stored in Unity Catalog Volumes through Medallion 
 ```mermaid
 graph TD
     subgraph Unity Catalog Volumes
-        EV[Events CSVs] --> RE[Streaming Table: raw_events]
-        CV[Customers CSVs] --> CU[Streaming Table: customer_updates]
+        EV[Kafka stream events] --> RE[Streaming Table: raw_events]
+        CV[Customers CSVs in R2] --> CU[Streaming Table: customer_updates]
     end
 
     subgraph Bronze / Silver
