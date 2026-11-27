@@ -5,6 +5,14 @@ resources:
     default_schema:
       name: ${var.schema}
       catalog_name: ${var.catalog}
+      grants:
+        - principal: data_engineers
+          privileges:
+            - ALL_PRIVILEGES
+        - principal: account users
+          privileges:
+            - USE_SCHEMA
+            - SELECT
 
   volumes:
     source_files_volume:
@@ -28,9 +36,10 @@ resources:
       url: r2://${var.r2_bucket}@${var.cf_account_id}.r2.cloudflarestorage.com/${bundle.target}/customers
       credential_name: r2_bucket_cred
       grants:
-        - principal: ${var.service_principal_id}
+        - principal: data_engineers
           privileges:
             - READ_FILES
+            - MANAGE
         - principal: account users
           privileges:
             - READ_FILES
