@@ -1,6 +1,5 @@
 from pyspark import pipelines as dp
-from pyspark.sql import Row
-from pyspark.sql.functions import col, from_json
+import pyspark.sql.functions as F
 
 SCHEMA = (
     "event_id string, customer_id string, amount double, currency string, date string"
@@ -34,18 +33,11 @@ def raw_events():
         .options(**kafka_options)
         .load()
         .select(
-            from_json(col("value").cast("string"), SCHEMA).alias("parsed_data"),
-            col("topic"),
-            col("timestamp"),
+            F.from_json(F.col("value").cast("string"), SCHEMA).alias("parsed_data"),
+            F.col("topic"),
+            F.col("timestamp"),
         )
         .select("parsed_data.*", "topic", "timestamp")
-    )
-
-
-@dp.materialized_view(name="currency_rates")
-def currency_rates():
-    return spark.createDataFrame(
-        [Row(currency="USD", rate=3.04), Row(currency="BYN", rate=1.0)]
     )
 
 
@@ -54,9 +46,16 @@ def enriched_events():
     events = spark.readStream.table("raw_events")
     rates = spark.read.table("currency_rates")
 
-    return events.join(rates, on="currency", how="left").select(
+    return events.join(
+        rates,
+        on=(events.currency == rates.currency)
+        & (F.to_date(events.date).cast("string") == rates.rate_date),
+        how="left",
+    ).select(
         events.event_id,
         events.customer_id,
-        (events.amount * rates.rate).alias("amount_byn"),
+        F.round(events.amount / F.coalesce(rates.rate, F.lit(1.0)), 2).alias(
+            "amount_byn"
+        ),
         events.date,
     )

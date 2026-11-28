@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=../../.dab-schema.json
+
+resources:
+  jobs:
+    fetch_currency_rates_job:
+      name: fetch_currency_rates_job
+      schedule:
+        quartz_cron_expression: "0 0 8 * * ?"
+        timezone_id: UTC
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      tasks:
+        - task_key: fetch_currency_rates
+          environment_key: Default
+          spark_python_task:
+            python_file: ../../src/tasks/fetch_currency_rates.py
+            parameters:
+              - ${var.catalog}
+              - ${resources.schemas.default_schema.name}
+              - ${var.secret_scope_name}
+      webhook_notifications:
+        on_failure:
+          - id: ${var.notification_webhook_id}

@@ -1,10 +1,15 @@
 CREATE OR REFRESH MATERIALIZED VIEW amount_by_date
-AS SELECT date, sum(amount_byn) AS date_total_byn
+AS SELECT date, round(sum(amount_byn), 2) AS date_total_byn
 FROM enriched_events
 GROUP BY date;
 
 CREATE OR REFRESH MATERIALIZED VIEW customer_amount_by_date
-AS SELECT name, address, date, sum(amount_byn) AS date_total_byn
+AS
+SELECT
+    coalesce(name, 'Unknown/Deleted') AS name,
+    address,
+    date,
+    round(sum(amount_byn), 2) AS date_total_byn
 FROM enriched_events e
 LEFT JOIN customers c
     ON
