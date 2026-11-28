@@ -18,7 +18,7 @@ resources:
             python_file: ../../src/tasks/fetch_currency_rates.py
             parameters:
               - ${var.catalog}
-              - ${var.schema}
+              - ${resources.schemas.default_schema.name}
               - ${var.secret_scope_name}
       webhook_notifications:
         on_failure:
