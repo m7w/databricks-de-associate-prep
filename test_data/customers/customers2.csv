@@ -1,3 +1,4 @@
 customer_id,name,address,operation,process_date
-1,Bob,22 Odd st.,UPDATE,2026-08-05
-2,Alice,5 Knight st.,DELETE,2026-08-15
+1,Bob,22 Odd st.,UPDATE,2026-11-25
+2,Alice,5 Knight st.,DELETE,2026-11-24
+3,Mike,77 Palmer ave.,NEW,2026-11-24

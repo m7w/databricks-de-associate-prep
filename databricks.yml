@@ -6,6 +6,7 @@ include:
   - resources/variables.yml
   - resources/infrastructure.yml
   - resources/pipelines/customer_events.pipeline.yml
+  - resources/jobs/fetch_currency_rates.job.yml
   - resources/jobs/customer_events.job.yml
 
 targets:

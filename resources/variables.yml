@@ -11,7 +11,7 @@ variables:
     description: The schema to use
   secret_scope_name:
     description: Secret scope to use
-    default: kafka_scope_${bundle.target}
+    default: project_secrets_${bundle.target}
   notification_webhook_id:
     description: System Databricks webhook id for Telegram
   service_principal_id:

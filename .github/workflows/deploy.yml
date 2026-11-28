@@ -62,15 +62,18 @@ jobs:
 
       - name: Sync Secrets to Databricks
         run: |
-          SCOPE=$(databricks bundle validate -t dev --output json | jq -r '.resources.secret_scopes.kafka_scope.name')
+          SCOPE=$(databricks bundle validate -t dev --output json | jq -r '.resources.secret_scopes.project_secrets.name')
 
           databricks secrets put-secret ${SCOPE} kafka_user \
             --string-value "${{ secrets.KAFKA_USER }}"
           databricks secrets put-secret ${SCOPE} kafka_password \
             --string-value "${{ secrets.KAFKA_PASSWORD }}"
+          databricks secrets put-secret ${SCOPE} currencybeacon_api_key \
+            --string-value "${{ secrets.CURRENCYBEACON_API_KEY}}"
 
       - name: Run Pipeline Integration Test
         run: |
+          databricks bundle run fetch_currency_rates_job -t dev
           databricks bundle run customer_events_job -t dev
 
   deploy-prod:
@@ -102,9 +105,11 @@ jobs:
 
       - name: Sync Secrets to Databricks
         run: |
-          SCOPE=$(databricks bundle validate -t prod --output json | jq -r '.resources.secret_scopes.kafka_scope.name')
+          SCOPE=$(databricks bundle validate -t prod --output json | jq -r '.resources.secret_scopes.project_secrets.name')
 
           databricks secrets put-secret ${SCOPE} kafka_user \
             --string-value "${{ secrets.KAFKA_USER }}"
           databricks secrets put-secret ${SCOPE} kafka_password \
             --string-value "${{ secrets.KAFKA_PASSWORD }}"
+          databricks secrets put-secret ${SCOPE} currencybeacon_api_key \
+            --string-value "${{ secrets.CURRENCYBEACON_API_KEY}}"

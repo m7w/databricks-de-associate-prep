@@ -42,21 +42,21 @@ def raw_events():
     )
 
 
-@dp.materialized_view(name="currency_rates")
-def currency_rates():
-    return spark.createDataFrame(
-        [Row(currency="USD", rate=3.04), Row(currency="BYN", rate=1.0)]
-    )
-
-
 @dp.table(name="enriched_events")
 def enriched_events():
     events = spark.readStream.table("raw_events")
     rates = spark.read.table("currency_rates")
 
-    return events.join(rates, on="currency", how="left").select(
+    return events.join(
+        rates,
+        on=(events.currency == rates.currency)
+        & (F.to_date(events.date).cast("string") == rates.rate_date),
+        how="left",
+    ).select(
         events.event_id,
         events.customer_id,
-        (events.amount * rates.rate).alias("amount_byn"),
+        F.round(events.amount / F.coalesce(rates.rate, F.lit(1.0)), 2).alias(
+            "amount_byn"
+        ),
         events.date,
     )
