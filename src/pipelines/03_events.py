@@ -1,6 +1,5 @@
 from pyspark import pipelines as dp
-from pyspark.sql import Row
-from pyspark.sql.functions import col, from_json
+import pyspark.sql.functions as F
 
 SCHEMA = (
     "event_id string, customer_id string, amount double, currency string, date string"
@@ -34,9 +33,9 @@ def raw_events():
         .options(**kafka_options)
         .load()
         .select(
-            from_json(col("value").cast("string"), SCHEMA).alias("parsed_data"),
-            col("topic"),
-            col("timestamp"),
+            F.from_json(F.col("value").cast("string"), SCHEMA).alias("parsed_data"),
+            F.col("topic"),
+            F.col("timestamp"),
         )
         .select("parsed_data.*", "topic", "timestamp")
     )
